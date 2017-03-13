@@ -21,6 +21,8 @@ import android.telephony.PhoneNumberUtils;
 import android.widget.Toast;
 
 import org.codeaurora.ims.QtiCallConstants;
+import org.codeaurora.rcscommon.CallComposerData;
+import org.codeaurora.rcscommon.RcsManager;
 
 /**
  * Single point of entry for all outgoing and incoming calls.
@@ -178,6 +180,19 @@ public class CallIntentProcessor {
         }
 
         UserHandle initiatingUser = intent.getParcelableExtra(KEY_INITIATING_USER);
+
+
+        CallComposerData callComposerData = null;
+        if (RcsManager.getInstance(context).isEnrichCallFeatureEnabled()) {
+            callComposerData = intent.getParcelableExtra(RcsManager.ENRICH_CALL_INTENT_EXTRA);
+        }
+
+        Log.i(CallIntentProcessor.class, "callComposerData of MO call: " + callComposerData);
+
+        if (callComposerData != null) {
+            clientExtras.putBundle(RcsManager.ENRICH_CALL_INTENT_EXTRA,
+                    callComposerData.getBundle());
+        }
 
         // Send to CallsManager to ensure the InCallUI gets kicked off before the broadcast returns
         Call call = callsManager

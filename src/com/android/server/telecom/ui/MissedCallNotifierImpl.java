@@ -39,7 +39,6 @@ import com.android.server.telecom.R;
 import com.android.server.telecom.Runnable;
 import com.android.server.telecom.TelecomBroadcastIntentProcessor;
 import com.android.server.telecom.TelecomSystem;
-import com.android.server.telecom.TelephonyUtil;
 import com.android.server.telecom.components.TelecomBroadcastReceiver;
 
 import android.app.Notification;
@@ -644,7 +643,7 @@ public class MissedCallNotifierImpl extends CallsManagerListenerBase implements 
         StringBuilder where = new StringBuilder("(type=");
         where.append(Calls.MISSED_TYPE);
         where.append(" OR type=");
-        where.append(TelephonyUtil.MISSED_IMS_TYPE);
+        where.append(Calls.MISSED_IMS_TYPE);
         where.append(" OR type=");
         where.append(Calls.MISSED_WIFI_TYPE+")");
         where.append(" AND new=1");

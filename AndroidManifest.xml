@@ -43,6 +43,8 @@
     <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
     <uses-permission android:name="android.permission.READ_BLOCKED_NUMBERS" />
     <uses-permission android:name="android.permission.WRITE_BLOCKED_NUMBERS" />
+    <!-- For enrich call -->
+    <uses-permission android:name="com.qualcomm.qti.internal.permission.ACCESS_ENRICHED_CALL" />
 
     <permission
             android:name="android.permission.BROADCAST_CALLLOG_INFO"
@@ -72,6 +74,8 @@
             android:usesCleartextTraffic="false"
             android:defaultToDeviceProtectedStorage="true"
             android:directBootAware="true">
+
+        <uses-library android:name="org.codeaurora.rcscommon" android:required="false" />
 
         <!-- CALL vs CALL_PRIVILEGED vs CALL_EMERGENCY
              We have three different intents through which a call can be initiated each with its

@@ -216,7 +216,7 @@ public final class CallLogManager extends CallsManagerListenerBase {
         Long callDataUsage = call.getCallDataUsage() == Call.DATA_USAGE_NOT_SET ? null :
                 call.getCallDataUsage();
 
-        int callFeatures = getCallFeatures(call.getVideoStateHistory(),
+        int callFeatures = getCallFeatures(call,
                 call.getDisconnectCause().getCode() == DisconnectCause.CALL_PULLED);
         logCall(call.getCallerInfo(), logNumber, call.getPostDialDigits(), formattedViaNumber,
                 call.getHandlePresentation(), toPreciseLogType(call, callLogType), callFeatures,
@@ -289,14 +289,17 @@ public final class CallLogManager extends CallsManagerListenerBase {
     /**
      * Based on the video state of the call, determines the call features applicable for the call.
      *
-     * @param videoState The video state.
+     * @param Call
      * @param isPulledCall {@code true} if this call was pulled to another device.
      * @return The call features.
      */
-    private static int getCallFeatures(int videoState, boolean isPulledCall) {
+    private static int getCallFeatures(Call call, boolean isPulledCall) {
         int features = 0;
-        if (VideoProfile.isVideo(videoState)) {
+        if (VideoProfile.isVideo(call.getVideoStateHistory())) {
             features |= Calls.FEATURES_VIDEO;
+        } else if (RcsCallHandler.getInstance().getEnrichCallData(call) != null
+                && RcsCallHandler.getInstance().getEnrichCallData(call).isValid()) {
+            features |= Calls.FEATURES_ENRICHED;
         }
         if (isPulledCall) {
             features |= Calls.FEATURES_PULLED_EXTERNALLY;
@@ -486,21 +489,21 @@ public final class CallLogManager extends CallsManagerListenerBase {
                 if(isWifiCall) {
                     callLogType = Calls.INCOMING_WIFI_TYPE;
                 } else {
-                    callLogType = TelephonyUtil.INCOMING_IMS_TYPE;
+                    callLogType = Calls.INCOMING_IMS_TYPE;
                 }
                 break;
             case Calls.OUTGOING_TYPE :
                 if(isWifiCall) {
                     callLogType = Calls.OUTGOING_WIFI_TYPE;
                 } else {
-                    callLogType = TelephonyUtil.OUTGOING_IMS_TYPE;
+                    callLogType = Calls.OUTGOING_IMS_TYPE;
                 }
                 break;
             case Calls.MISSED_TYPE :
                 if(isWifiCall) {
                     callLogType = Calls.MISSED_WIFI_TYPE;
                 } else {
-                    callLogType = TelephonyUtil.MISSED_IMS_TYPE;
+                    callLogType = Calls.MISSED_IMS_TYPE;
                 }
                 break;
             default:
