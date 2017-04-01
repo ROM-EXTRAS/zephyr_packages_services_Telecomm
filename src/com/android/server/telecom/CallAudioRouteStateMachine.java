@@ -653,7 +653,8 @@ public class CallAudioRouteStateMachine extends StateMachine {
         @Override
         public void enter() {
             super.enter();
-            setSpeakerphoneOn(false);
+            // Don't close speaker to avoid Audio selects headset
+            // for a breif time with priority
             setBluetoothOn(true);
             CallAudioState newState = new CallAudioState(mIsMuted, ROUTE_BLUETOOTH,
                     mAvailableRoutes);
