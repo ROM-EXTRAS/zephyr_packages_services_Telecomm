@@ -89,8 +89,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.codeaurora.ims.QtiCallConstants;
 import org.codeaurora.ims.utils.QtiImsExtUtils;
 import org.codeaurora.internal.IExtTelephony;
-import org.codeaurora.rcscommon.CallComposerData;
-import org.codeaurora.rcscommon.RcsManager;
 /**
  * Singleton.
  *
@@ -348,8 +346,6 @@ public class CallsManager extends Call.ListenerBase
         mListeners.add(mHeadsetMediaButton);
         mListeners.add(mProximitySensorManager);
         mListeners.add(mViceNotificationImpl);
-
-        RcsCallHandler.init(context, this);
 
         // There is no USER_SWITCHED broadcast for user 0, handle it here explicitly.
         final UserManager userManager = UserManager.get(mContext);
@@ -933,11 +929,6 @@ public class CallsManager extends Call.ListenerBase
             }
 
             call.setVideoState(videoState);
-
-            phoneAccountHandle = RcsCallHandler.getInstance()
-                   .getPreferredRcsAccountHandler(handle.getScheme(),
-                   new CallComposerData(extras.getBundle(RcsManager.ENRICH_CALL_INTENT_EXTRA)),
-                   phoneAccountHandle);
         }
 
         boolean isAddParticipant = ((extras != null) && (extras.getBoolean(
@@ -2053,7 +2044,6 @@ public class CallsManager extends Call.ListenerBase
                 Trace.endSection();
             }
         }
-        RcsCallHandler.getInstance().updateCallComposerDataToCall(call);
         Trace.endSection();
     }
 

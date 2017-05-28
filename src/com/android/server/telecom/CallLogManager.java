@@ -216,7 +216,7 @@ public final class CallLogManager extends CallsManagerListenerBase {
         Long callDataUsage = call.getCallDataUsage() == Call.DATA_USAGE_NOT_SET ? null :
                 call.getCallDataUsage();
 
-        int callFeatures = getCallFeatures(call,
+        int callFeatures = getCallFeatures(call.getVideoStateHistory(),
                 call.getDisconnectCause().getCode() == DisconnectCause.CALL_PULLED);
         logCall(call.getCallerInfo(), logNumber, call.getPostDialDigits(), formattedViaNumber,
                 call.getHandlePresentation(), toPreciseLogType(call, callLogType), callFeatures,
@@ -289,17 +289,14 @@ public final class CallLogManager extends CallsManagerListenerBase {
     /**
      * Based on the video state of the call, determines the call features applicable for the call.
      *
-     * @param Call
+     * @param videoState The video state.
      * @param isPulledCall {@code true} if this call was pulled to another device.
      * @return The call features.
      */
-    private static int getCallFeatures(Call call, boolean isPulledCall) {
+    private static int getCallFeatures(int videoState, boolean isPulledCall) {
         int features = 0;
-        if (VideoProfile.isVideo(call.getVideoStateHistory())) {
+        if (VideoProfile.isVideo(videoState)) {
             features |= Calls.FEATURES_VIDEO;
-        } else if (RcsCallHandler.getInstance().getEnrichCallData(call) != null
-                && RcsCallHandler.getInstance().getEnrichCallData(call).isValid()) {
-            features |= Calls.FEATURES_ENRICHED;
         }
         if (isPulledCall) {
             features |= Calls.FEATURES_PULLED_EXTERNALLY;
